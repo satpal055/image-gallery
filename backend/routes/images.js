@@ -3,7 +3,7 @@ const multer = require("multer");
 const cloudinary = require("../config/cloudinary");
 const Image = require("../models/Image");
 const auth = require("../middleware/auth");
-
+const firebaseAuth = require("../middleware/firebaseAuth");
 const router = express.Router();
 const upload = multer({ dest: "uploads/" });
 
@@ -51,17 +51,15 @@ router.get("/", async (req, res) => {
 });
 
 /* ❤️ ---------------- LIKE / UNLIKE IMAGE ---------------- ❤️ */
-router.post("/:id/like", async (req, res) => {
-    const { userId } = req.body; // firebase user uid
+router.post("/:id/like", firebaseAuth, async (req, res) => {
+    const userId = req.user.uid; // 🔥 VERIFIED UID
 
     const image = await Image.findById(req.params.id);
     if (!image) return res.status(404).json({ msg: "Image not found" });
 
     if (image.likes.includes(userId)) {
-        // unlike
         image.likes = image.likes.filter(id => id !== userId);
     } else {
-        // like
         image.likes.push(userId);
     }
 

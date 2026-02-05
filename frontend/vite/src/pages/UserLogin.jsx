@@ -5,22 +5,25 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function UserLogin() {
-  const loginWithGoogle = async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
 
-      // backend me save
-      await axios.post(`${API_URL}/api/users/save`, {
-        uid: user.uid,
+  const loginWithGoogle = async () => {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    const token = await user.getIdToken(); // 🔥 REAL TOKEN
+
+    await axios.post(
+      `${API_URL}/api/users/save`,
+      {
         name: user.displayName,
-        email: user.email,
         photo: user.photoURL,
-      });
-    } catch (err) {
-      alert("Google login failed");
-      console.error(err);
-    }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // 🔥 token backend ko
+        },
+      }
+    );
   };
 
   return (

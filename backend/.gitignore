@@ -1,0 +1,4 @@
+# Firebase service account (SECRET)
+serviceAccountKey.json
+node_modules
+.env
