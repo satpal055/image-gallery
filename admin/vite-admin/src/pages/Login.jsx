@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:5000";
+const API_URL = import.meta.env.VITE_BASE_URL;
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -18,8 +18,7 @@ export default function Login() {
 
             localStorage.setItem("token", res.data.token);
 
-            // 🔥 ABSOLUTE redirect to ADMIN APP
-            window.location.assign("http://localhost:5174/dashboard");
+            navigate("/dashboard");
         } catch (err) {
             alert("Login failed");
             console.error(err);
